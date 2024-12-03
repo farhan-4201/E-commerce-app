@@ -1,116 +1,284 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class CatalogScreen extends StatelessWidget {
-  final List<Map<String, String>> products = [
-    {'image': 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.marecentre.nl%2F%3Fm%3D36368614&psig=AOvVaw37tr8GFehYYGlkwtE5MHuG&ust=1733248359162000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLCsobjTiYoDFQAAAAAdAAAAABAE', 'price': '3500'},
-    {'image': 'https://via.placeholder.com/150/FF4500', 'price': '3600'},
-    {'image': 'https://via.placeholder.com/150/DC143C', 'price': '3700'},
-    {'image': 'https://via.placeholder.com/150/FF8C00', 'price': '3800'},
-    {'image': 'https://via.placeholder.com/150/FF6347', 'price': '3900'},
-    {'image': 'https://via.placeholder.com/150/FF4500', 'price': '4000'},
-    {'image': 'https://via.placeholder.com/150/FF0000', 'price': '4100'},
-    {'image': 'https://via.placeholder.com/150/E9967A', 'price': '4200'},
-    {'image': 'https://via.placeholder.com/150/FF1493', 'price': '4300'},
-    {'image': 'https://via.placeholder.com/150/FFA07A', 'price': '4400'},
-    {'image': 'https://via.placeholder.com/150/FF7F50', 'price': '4500'},
-    {'image': 'https://via.placeholder.com/150/CD5C5C', 'price': '4600'},
-    {'image': 'https://via.placeholder.com/150/DB7093', 'price': '4700'},
-    {'image': 'https://via.placeholder.com/150/B22222', 'price': '4800'},
-    {'image': 'https://via.placeholder.com/150/FA8072', 'price': '4900'},
-    {'image': 'https://via.placeholder.com/150/FF69B4', 'price': '5000'},
-    {'image': 'https://via.placeholder.com/150/C71585', 'price': '5200'},
-    {'image': 'https://via.placeholder.com/150/FF4500', 'price': '5400'},
-    {'image': 'https://via.placeholder.com/150/FF6347', 'price': '5600'},
-    {'image': 'https://via.placeholder.com/150/FF4500', 'price': '6000'},
+class CatalogScreen extends StatefulWidget {
+  const CatalogScreen({super.key});
+
+  @override
+  State<CatalogScreen> createState() => _CatalogScreenState();
+}
+
+class _CatalogScreenState extends State<CatalogScreen> {
+  final List<Map<String, dynamic>> products = [
+    {
+      'images': [
+        'assets/AF1.jpg',
+        'assets/AF1_1.jpg',
+        'assets/AF1_2.jpg',
+      ],
+      'price': '3500',
+      'name': 'Nike Air Force 1',
+    },
+    {
+      'images': [
+        'assets/adidas_shoe.jpg',
+        'assets/adidas_shoe1.jpg',
+        'assets/adidas_shoe2.jpg',
+      ],
+      'price': '8600',
+      'name': 'Adidas UltraBoost',
+    },
+    {
+      'images': [
+        'assets/nike_shoe.jpg',
+        'assets/nike_shoe1.jpg',
+        'assets/nike_shoe2.jpg',
+      ],
+      'price': '3600',
+      'name': 'Nike Revolution',
+    },
+    {
+      'images': [
+        'assets/converse_shoe.jpg',
+        'assets/converse_shoe1.jpg',
+        'assets/converse_shoe2.jpg',
+      ],
+      'price': '5600',
+      'name': 'Converse Star',
+    },
+    {
+      'images': [
+        'assets/puma_shoe.jpg',
+        'assets/puma_shoe1.jpg',
+        'assets/puma_shoe2.jpg',
+      ],
+      'price': '6600',
+      'name': 'Puma RS-X',
+    },
   ];
 
-  CatalogScreen({super.key});
+  String searchQuery = '';
+  List<Map<String, dynamic>> filteredProducts = [];
+  Map<int, int> currentImageIndexMap = {}; // Track image index for each product
+
+  @override
+  void initState() {
+    super.initState();
+    filteredProducts = products;
+  }
+
+  void updateSearch(String query) {
+    setState(() {
+      searchQuery = query;
+      filteredProducts = products
+          .where((product) =>
+              product['name']!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void updateImageIndex(int index, int productIndex, int totalImages) {
+    setState(() {
+      currentImageIndexMap[productIndex] = (index + totalImages) % totalImages;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFF7CE7FF),
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Store',
-          style: TextStyle(color: Colors.black),
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.shopping_cart, color: Colors.black),
-          ),
-        ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
+      body: Container(
+        color: const Color(0xFF7CE7FF),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      onChanged: updateSearch,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Search',
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 15.0),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        // Handle cart button click
+                      },
+                      icon: const FaIcon(
+                        FontAwesomeIcons.cartShopping,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'New Arrivals',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'New Arrivals',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ClipRRect(
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: filteredProducts.length,
+                itemBuilder: (context, index) {
+                  final product = filteredProducts[index];
+                  int currentImageIndex = currentImageIndexMap[index] ?? 0;
+
+                  return MouseRegion(
+                    onEnter: (_) {
+                      setState(() {
+                        product['hover'] = true;
+                      });
+                    },
+                    onExit: (_) {
+                      setState(() {
+                        product['hover'] = false;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
-                        child: Image.network(
-                          product['image']!,
-                          height: 100,
-                          fit: BoxFit.cover,
+                        color: product['hover'] == true
+                            ? Colors.grey.shade200
+                            : Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade400,
+                            blurRadius: 5.0,
+                            offset: const Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          // Add product to cart or navigate to product details
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Image.asset(
+                                    product['images'][currentImageIndex],
+                                    height: product['hover'] == true ? 120 : 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  if (product['hover'] == true)
+                                    Positioned(
+                                      top: 0,
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        color: Colors.black38,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.arrow_back,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () => updateImageIndex(
+                                                currentImageIndex - 1,
+                                                index,
+                                                product['images'].length,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10.0), // Space between buttons
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.arrow_forward,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () => updateImageIndex(
+                                                currentImageIndex + 1,
+                                                index,
+                                                product['images'].length,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10.0),
+                            Text(
+                              product['name']!,
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                            const SizedBox(height: 5.0),
+                            Text(
+                              'PKR ${product['price']}',
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 10.0),
-                      Text(
-                        'PKR ${product['price']}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
