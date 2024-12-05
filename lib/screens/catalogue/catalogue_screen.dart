@@ -60,7 +60,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   String searchQuery = '';
   List<Map<String, dynamic>> filteredProducts = [];
-  Map<int, int> currentImageIndexMap = {}; // Track image index for each product
+  Map<int, int> currentImageIndexMap = {};
+  final List<Map<String, dynamic>> cart = [];
 
   @override
   void initState() {
@@ -84,6 +85,27 @@ class _CatalogScreenState extends State<CatalogScreen> {
     });
   }
 
+  void addToCart(Map<String, dynamic> product) {
+    setState(() {
+      cart.add(product);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${product['name']} added to cart'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void navigateToCart() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CartScreen(cartItems: cart),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,59 +120,54 @@ class _CatalogScreenState extends State<CatalogScreen> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                onPressed: navigateToCart,
+                icon: const FaIcon(
+                  FontAwesomeIcons.cartShopping,
+                  color: Colors.black,
+                ),
+              ),
+              if (cart.isNotEmpty)
+                Positioned(
+                  right: 4,
+                  top: 4,
+                  child: CircleAvatar(
+                    radius: 10,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      cart.length.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
       ),
       body: Container(
         color: const Color(0xFF7CE7FF),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      onChanged: updateSearch,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'Search',
-                        hintStyle: const TextStyle(color: Colors.grey),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 15.0),
-                      ),
-                    ),
+              child: TextField(
+                onChanged: updateSearch,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Search',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide.none,
                   ),
-                  const SizedBox(width: 10.0),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        // Handle cart button click
-                      },
-                      icon: const FaIcon(
-                        FontAwesomeIcons.cartShopping,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'New Arrivals',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
                 ),
               ),
             ),
@@ -168,110 +185,108 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   final product = filteredProducts[index];
                   int currentImageIndex = currentImageIndexMap[index] ?? 0;
 
-                  return MouseRegion(
-                    onEnter: (_) {
-                      setState(() {
-                        product['hover'] = true;
-                      });
-                    },
-                    onExit: (_) {
-                      setState(() {
-                        product['hover'] = false;
-                      });
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                        color: product['hover'] == true
-                            ? Colors.grey.shade200
-                            : Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            blurRadius: 5.0,
-                            offset: const Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          // Add product to cart or navigate to product details
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Image.asset(
-                                    product['images'][currentImageIndex],
-                                    height: product['hover'] == true ? 120 : 100,
-                                    fit: BoxFit.cover,
+                  return Card(
+                    elevation: 5.0,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Image.asset(
+                                  product['images'][currentImageIndex],
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Center(
+                                      child: Text('Image not found'),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Positioned(
+                                left: 5,
+                                top: 40,
+                                child: IconButton(
+                                  onPressed: () {
+                                    updateImageIndex(
+                                      currentImageIndex - 1,
+                                      index,
+                                      product['images'].length,
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios,
+                                    size: 20,
+                                    color: Colors.black,
                                   ),
-                                  if (product['hover'] == true)
-                                    Positioned(
-                                      top: 0,
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        color: Colors.black38,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.arrow_back,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () => updateImageIndex(
-                                                currentImageIndex - 1,
-                                                index,
-                                                product['images'].length,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10.0), // Space between buttons
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.arrow_forward,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () => updateImageIndex(
-                                                currentImageIndex + 1,
-                                                index,
-                                                product['images'].length,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                                ),
                               ),
+                              Positioned(
+                                right: 5,
+                                top: 40,
+                                child: IconButton(
+                                  onPressed: () {
+                                    updateImageIndex(
+                                      currentImageIndex + 1,
+                                      index,
+                                      product['images'].length,
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            product['name'],
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.0,
                             ),
-                            const SizedBox(height: 10.0),
-                            Text(
-                              product['name']!,
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0,
+                          ),
+                        ),
+                        Text(
+                          'PKR ${product['price']}',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () => addToCart(product),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
                               ),
+                              child: const Text('Add to Cart'),
                             ),
-                            const SizedBox(height: 5.0),
-                            Text(
-                              'PKR ${product['price']}',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                                color: Colors.black,
+                            ElevatedButton(
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Bought ${product['name']}'),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
                               ),
+                              child: const Text('Buy'),
                             ),
                           ],
                         ),
-                      ),
+                      ],
                     ),
                   );
                 },
@@ -280,6 +295,40 @@ class _CatalogScreenState extends State<CatalogScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CartScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> cartItems;
+
+  const CartScreen({super.key, required this.cartItems});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Cart'),
+      ),
+      body: cartItems.isEmpty
+          ? const Center(
+              child: Text('No items in the cart'),
+            )
+          : ListView.builder(
+              itemCount: cartItems.length,
+              itemBuilder: (context, index) {
+                final item = cartItems[index];
+                return ListTile(
+                  leading: Image.asset(
+                    item['images'][0],
+                    width: 50,
+                    height: 50,
+                  ),
+                  title: Text(item['name']),
+                  subtitle: Text('PKR ${item['price']}'),
+                );
+              },
+            ),
     );
   }
 }
