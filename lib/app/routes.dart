@@ -8,7 +8,7 @@ class AppRoutes {
     return {
       '/login': (context) => const LoginScreen(),
       '/signup': (context) => const SignUpScreen(),
-      '/catalog': (context) => const CatalogueScreen(),
+      '/catalog': (context) => const CatalogScreen(),
 
     };
   }
