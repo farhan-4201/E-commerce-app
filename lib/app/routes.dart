@@ -10,9 +10,19 @@ class AppRoutes {
       '/login': (context) => const LoginScreen(),
       '/signup': (context) => const SignUpScreen(),
       '/catalog': (context) => const CatalogScreen(),
-      '/checkout': (context) => CheckoutScreen(
-        product: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>, // Get the product details passed during navigation
-      ),
+      '/checkout': (context) {
+        final arguments = ModalRoute.of(context)?.settings.arguments;
+        if (arguments is Map<String, dynamic>) {
+          return CheckoutScreen(product: arguments);
+        } else {
+          // Provide fallback or error handling if arguments are missing
+          return const Scaffold(
+            body: Center(
+              child: Text('No product details provided for checkout!'),
+            ),
+          );
+        }
+      },
     };
   }
 }

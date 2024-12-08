@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '/screens/cart/cart_screen.dart'; // Import CartScreen correctly
-import '/screens/checkout/checkout_screen.dart'; // Import CheckoutScreen correctly
+import '/screens/cart/cart_screen.dart';
+import '/screens/checkout/checkout_screen.dart';
+import '/screens/admin/admin_panel_screen.dart'; // Import AdminPanelScreen
 
 class CatalogScreen extends StatefulWidget {
   const CatalogScreen({Key? key}) : super(key: key);
@@ -88,7 +89,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
     setState(() {
       int totalImages = products[productIndex]['images'].length;
       currentImageIndexMap[productIndex] =
-          (currentImageIndexMap[productIndex]! + delta + totalImages) % totalImages;
+          (currentImageIndexMap[productIndex]! + delta + totalImages) %
+              totalImages;
     });
   }
 
@@ -110,7 +112,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CartScreen(cart: cart), // Pass cart data
+        builder: (context) => CartScreen(cart: cart),
       ),
     );
   }
@@ -124,18 +126,25 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
+  void navigateToAdminPanel() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdminPanelScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: const Text(
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
                 'Menu',
                 style: TextStyle(
                   color: Colors.white,
@@ -147,25 +156,20 @@ class _CatalogScreenState extends State<CatalogScreen> {
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.user),
               title: const Text('Switch to Admin'),
-              onTap: () {
-                Navigator.pop(context); // Close the Drawer
-                // Navigate to admin screen or handle admin logic
-              },
+              onTap: navigateToAdminPanel, // Navigate to Admin Panel
             ),
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.signOutAlt),
               title: const Text('Logout'),
               onTap: () {
-                Navigator.pop(context); // Close the Drawer
-                // Handle logout logic here
+                Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const FaIcon(FontAwesomeIcons.search),
               title: const Text('Search'),
               onTap: () {
-                Navigator.pop(context); // Close the Drawer
-                // Handle search logic or navigate to search page
+                Navigator.pop(context);
               },
             ),
           ],
@@ -174,11 +178,15 @@ class _CatalogScreenState extends State<CatalogScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF7CE7FF),
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Scaffold.of(context).openDrawer(),
-          icon: const FaIcon(
-            FontAwesomeIcons.bars,
-            color: Colors.black,
+        leading: Builder(
+          builder: (context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: const FaIcon(
+              FontAwesomeIcons.bars,
+              color: Colors.black,
+            ),
           ),
         ),
         title: Text(
@@ -219,149 +227,148 @@ class _CatalogScreenState extends State<CatalogScreen> {
           ),
         ],
       ),
-      body: Container(
-        color: const Color(0xFF7CE7FF),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                onChanged: updateSearch,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: 'Search products...',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+              onChanged: updateSearch,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Search products...',
+                hintStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide.none,
                 ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
               ),
             ),
-            Expanded(
-              child: filteredProducts.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'No products found',
-                        style: TextStyle(fontSize: 16.0),
-                      ),
-                    )
-                  : GridView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16.0,
-                        mainAxisSpacing: 16.0,
-                        childAspectRatio: 0.8,
-                      ),
-                      itemCount: filteredProducts.length,
-                      itemBuilder: (context, index) {
-                        final product = filteredProducts[index];
-                        int currentImageIndex =
-                            currentImageIndexMap[index] ?? 0;
-
-                        return Card(
-                          elevation: 5.0,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Stack(
-                                  children: [
-                                    Positioned.fill(
-                                      child: Image.asset(
-                                        product['images'][currentImageIndex],
-                                        fit: BoxFit.contain,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return const Center(
-                                            child: Text('Image not found'),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 5,
-                                      top: 85,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          updateImageIndex(index, -1);
-                                        },
-                                        icon: const FaIcon(
-                                          FontAwesomeIcons.chevronLeft,
-                                          size: 20,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: 5,
-                                      top: 85,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          updateImageIndex(index, 1);
-                                        },
-                                        icon: const FaIcon(
-                                          FontAwesomeIcons.chevronRight,
-                                          size: 20,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  product['name'],
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'PKR ${product['price']}',
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        addToCart(product);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
-                                      ),
-                                      child: const FaIcon(
-                                        FontAwesomeIcons.cartPlus,
-                                        size: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+          ),
+          Expanded(
+            child: filteredProducts.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No products found',
+                      style: TextStyle(fontSize: 16.0),
                     ),
-            ),
-          ],
-        ),
+                  )
+                : GridView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 16.0,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemCount: filteredProducts.length,
+                    itemBuilder: (context, index) {
+                      final product = filteredProducts[index];
+                      int currentImageIndex = currentImageIndexMap[index] ?? 0;
+
+                      return Card(
+                        elevation: 5.0,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: Image.asset(
+                                      product['images'][currentImageIndex],
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Center(
+                                          child: Text('Image not found'),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 5,
+                                    top: 85,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        updateImageIndex(index, -1);
+                                      },
+                                      icon: const FaIcon(
+                                        FontAwesomeIcons.chevronLeft,
+                                        size: 20,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 5,
+                                    top: 85,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        updateImageIndex(index, 1);
+                                      },
+                                      icon: const FaIcon(
+                                        FontAwesomeIcons.chevronRight,
+                                        size: 20,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                product['name'],
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'PKR ${product['price']}',
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      addToCart(product);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                    child: const FaIcon(
+                                      FontAwesomeIcons.cartPlus,
+                                      size: 14,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
