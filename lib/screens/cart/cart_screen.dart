@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import '/screens/checkout/checkout_screen.dart';
 class CartScreen extends StatefulWidget {
   final List<Map<String, dynamic>> cart;
 
@@ -28,6 +28,14 @@ class _CartScreenState extends State<CartScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Bought ${product['name']}!'),
+      ),
+    );
+
+    // Correctly navigate to the checkout screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CheckoutScreen(product: product),
       ),
     );
   }
@@ -89,7 +97,7 @@ class _CartScreenState extends State<CartScreen> {
                         IconButton(
                           icon: const FaIcon(FontAwesomeIcons.shoppingBag, color: Colors.green),
                           onPressed: () {
-                            buyItem(context, product);
+                            buyItem(context, product); // Pass the product to the checkout screen
                           },
                         ),
                         IconButton(

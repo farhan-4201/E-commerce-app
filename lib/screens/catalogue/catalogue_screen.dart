@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '/screens/cart/cart_screen.dart'; // Import CartScreen correctly
+import '/screens/checkout/checkout_screen.dart'; // Import CheckoutScreen correctly
 
 class CatalogScreen extends StatefulWidget {
   const CatalogScreen({Key? key}) : super(key: key);
@@ -114,12 +115,72 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
+  void navigateToCheckout(Map<String, dynamic> product) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CheckoutScreen(product: product),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: const Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const FaIcon(FontAwesomeIcons.user),
+              title: const Text('Switch to Admin'),
+              onTap: () {
+                Navigator.pop(context); // Close the Drawer
+                // Navigate to admin screen or handle admin logic
+              },
+            ),
+            ListTile(
+              leading: const FaIcon(FontAwesomeIcons.signOutAlt),
+              title: const Text('Logout'),
+              onTap: () {
+                Navigator.pop(context); // Close the Drawer
+                // Handle logout logic here
+              },
+            ),
+            ListTile(
+              leading: const FaIcon(FontAwesomeIcons.search),
+              title: const Text('Search'),
+              onTap: () {
+                Navigator.pop(context); // Close the Drawer
+                // Handle search logic or navigate to search page
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: const Color(0xFF7CE7FF),
         elevation: 0,
+        leading: IconButton(
+          onPressed: () => Scaffold.of(context).openDrawer(),
+          icon: const FaIcon(
+            FontAwesomeIcons.bars,
+            color: Colors.black,
+          ),
+        ),
         title: Text(
           'Store',
           style: GoogleFonts.poppins(
@@ -134,7 +195,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
               IconButton(
                 onPressed: navigateToCart,
                 icon: const FaIcon(
-                  FontAwesomeIcons.cartShopping,
+                  FontAwesomeIcons.shoppingCart,
                   color: Colors.black,
                 ),
               ),
@@ -189,8 +250,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     )
                   : GridView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 16.0,
                         mainAxisSpacing: 16.0,
@@ -257,44 +317,42 @@ class _CatalogScreenState extends State<CatalogScreen> {
                                   product['name'],
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
+                                    fontSize: 16,
                                   ),
-                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                              Text(
-                                'PKR ${product['price']}',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () => addToCart(product),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'PKR ${product['price']}',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                    child: const Text('Add to Cart'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content:
-                                              Text('Bought ${product['name']}!'),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        addToCart(product);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
                                         ),
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
+                                      ),
+                                      child: const FaIcon(
+                                        FontAwesomeIcons.cartPlus,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                    child: const Text('Buy'),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),
