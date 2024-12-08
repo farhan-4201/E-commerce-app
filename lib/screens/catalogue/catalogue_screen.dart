@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '/screens/cart/cart_screen.dart'; // Import CartScreen correctly
 
 class CatalogScreen extends StatefulWidget {
   const CatalogScreen({Key? key}) : super(key: key);
@@ -86,8 +87,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     setState(() {
       int totalImages = products[productIndex]['images'].length;
       currentImageIndexMap[productIndex] =
-          (currentImageIndexMap[productIndex]! + delta + totalImages) %
-              totalImages;
+          (currentImageIndexMap[productIndex]! + delta + totalImages) % totalImages;
     });
   }
 
@@ -101,6 +101,15 @@ class _CatalogScreenState extends State<CatalogScreen> {
       SnackBar(
         content: Text('${product['name']} added to cart!'),
         duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
+  void navigateToCart() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CartScreen(cart: cart), // Pass cart data
       ),
     );
   }
@@ -123,13 +132,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
           Stack(
             children: [
               IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Cart Items: ${cart.length}"),
-                    ),
-                  );
-                },
+                onPressed: navigateToCart,
                 icon: const FaIcon(
                   FontAwesomeIcons.cartShopping,
                   color: Colors.black,
@@ -160,7 +163,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(20.0),
               child: TextField(
                 onChanged: updateSearch,
                 decoration: InputDecoration(
@@ -209,9 +212,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
                                     Positioned.fill(
                                       child: Image.asset(
                                         product['images'][currentImageIndex],
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error,
-                                            stackTrace) {
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (context, error, stackTrace) {
                                           return const Center(
                                             child: Text('Image not found'),
                                           );
@@ -220,7 +222,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                                     ),
                                     Positioned(
                                       left: 5,
-                                      top: 40,
+                                      top: 85,
                                       child: IconButton(
                                         onPressed: () {
                                           updateImageIndex(index, -1);
@@ -234,7 +236,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                                     ),
                                     Positioned(
                                       right: 5,
-                                      top: 40,
+                                      top: 85,
                                       child: IconButton(
                                         onPressed: () {
                                           updateImageIndex(index, 1);
@@ -269,8 +271,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   ElevatedButton(
                                     onPressed: () => addToCart(product),
@@ -281,11 +282,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                              'Bought ${product['name']}!'),
+                                          content:
+                                              Text('Bought ${product['name']}!'),
                                         ),
                                       );
                                     },
