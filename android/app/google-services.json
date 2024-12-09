@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "525473371840",
+    "project_id": "e-commerce-7d2ad",
+    "storage_bucket": "e-commerce-7d2ad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525473371840:android:8e8e0a54565df01460bf25",
+        "android_client_info": {
+          "package_name": "com.bahria.ecommerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGASmmg9W5cTzwrPCgGPSL44x4WcIq4n0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

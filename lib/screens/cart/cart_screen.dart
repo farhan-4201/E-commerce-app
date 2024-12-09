@@ -5,7 +5,7 @@ import '/screens/checkout/checkout_screen.dart';
 class CartScreen extends StatefulWidget {
   final List<Map<String, dynamic>> cart;
 
-  const CartScreen({Key? key, required this.cart}) : super(key: key);
+  const CartScreen({super.key, required this.cart});
 
   @override
   State<CartScreen> createState() => _CartScreenState();

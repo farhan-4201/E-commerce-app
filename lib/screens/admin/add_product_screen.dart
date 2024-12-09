@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AddProductScreen extends StatelessWidget {
   static const routeName = '/add-product';
@@ -8,12 +9,20 @@ class AddProductScreen extends StatelessWidget {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  AddProductScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Product'),
         centerTitle: true,
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context); // Navigate backward when tapped
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

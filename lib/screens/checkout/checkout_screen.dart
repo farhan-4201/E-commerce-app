@@ -6,7 +6,7 @@ import 'payment_screen.dart';
 class CheckoutScreen extends StatefulWidget {
   final Map<String, dynamic> product;
 
-  const CheckoutScreen({Key? key, required this.product}) : super(key: key);
+  const CheckoutScreen({super.key, required this.product});
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -33,7 +33,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter valid card details')),
+        const SnackBar(content: Text('Please enter valid card details')),
       );
     }
   }
@@ -42,7 +42,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF7CE7FF),
+        backgroundColor: const Color(0xFF7CE7FF),
         elevation: 0,
         title: Text(
           'Checkout',
@@ -53,7 +53,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
           onPressed: () {
             Navigator.pop(context); // Go back to the previous screen
           },
@@ -64,7 +64,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         child: Column(
           children: [
             Card(
-              color: Color(0xFFB0C7F7),
+              color: const Color(0xFFB0C7F7),
               elevation: 2,
               margin: const EdgeInsets.symmetric(vertical: 8),
               child: ListTile(
@@ -85,13 +85,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Form(
               key: _formKey,
               child: Column(
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Card Holder Name'),
+                    decoration: const InputDecoration(labelText: 'Card Holder Name'),
                     onChanged: (value) {
                       setState(() {
                         cardHolderName = value;
@@ -104,9 +104,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Card Number'),
+                    decoration: const InputDecoration(labelText: 'Card Number'),
                     onChanged: (value) {
                       setState(() {
                         cardNumber = value;
@@ -119,9 +119,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Expiry Date (MM/YY)'),
+                    decoration: const InputDecoration(labelText: 'Expiry Date (MM/YY)'),
                     onChanged: (value) {
                       setState(() {
                         expiryDate = value;
@@ -134,9 +134,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'CVV'),
+                    decoration: const InputDecoration(labelText: 'CVV'),
                     onChanged: (value) {
                       setState(() {
                         cvv = value;
@@ -149,13 +149,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: () {
                       goToPaymentScreen(context); // Navigate to the payment screen
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF7CE7FF), // Use color instead of primary
+                      backgroundColor: const Color(0xFF7CE7FF), // Use color instead of primary
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     ),
                     child: Text(

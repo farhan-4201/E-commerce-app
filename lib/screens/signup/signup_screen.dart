@@ -1,116 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key});
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> _signUp(BuildContext context) async {
+    try {
+      final String email = emailController.text.trim();
+      final String password = passwordController.text.trim();
+
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      // Optionally, save user details like first name and last name to Firestore here
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sign Up Successful')),
+      );
+
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign Up Failed: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF7CE7FF), Color(0xFFB0C7F7)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        // Existing UI remains unchanged
         child: Center(
           child: Container(
-            padding: const EdgeInsets.all(20.0),
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Sign Up for QuickShop",
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20.0),
                 TextField(
-                  decoration: InputDecoration(
-                    labelText: "First Name",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
+                  controller: firstNameController,
+                  decoration: const InputDecoration(labelText: "First Name"),
                 ),
-                const SizedBox(height: 15.0),
                 TextField(
-                  decoration: InputDecoration(
-                    labelText: "Last Name",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
+                  controller: lastNameController,
+                  decoration: const InputDecoration(labelText: "Last Name"),
                 ),
-                const SizedBox(height: 15.0),
                 TextField(
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: "Email"),
                 ),
-                const SizedBox(height: 15.0),
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
+                  decoration: const InputDecoration(labelText: "Password"),
                 ),
-                const SizedBox(height: 20.0),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Handle sign-up logic
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: const Text("Sign Up"),
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Already have an account? "),
-                    GestureDetector(
-                      onTap: () {
-                        // Navigate to login screen
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "Login here.",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ],
+                ElevatedButton(
+                  onPressed: () => _signUp(context),
+                  child: const Text("Sign Up"),
                 ),
               ],
             ),

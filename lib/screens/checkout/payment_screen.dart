@@ -9,19 +9,19 @@ class PaymentScreen extends StatelessWidget {
   final String cardHolderName;
 
   const PaymentScreen({
-    Key? key,
+    super.key,
     required this.product,
     required this.cardNumber,
     required this.expiryDate,
     required this.cvv,
     required this.cardHolderName,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF7CE7FF),
+        backgroundColor: const Color(0xFF7CE7FF),
         elevation: 0,
         title: Text(
           'Payment',
@@ -37,7 +37,7 @@ class PaymentScreen extends StatelessWidget {
         child: Column(
           children: [
             Card(
-              color: Color(0xFFB0C7F7),
+              color: const Color(0xFFB0C7F7),
               elevation: 2,
               margin: const EdgeInsets.symmetric(vertical: 8),
               child: ListTile(
@@ -58,36 +58,36 @@ class PaymentScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Card Holder Name: $cardHolderName',
               style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Card Number: $cardNumber',
               style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Expiry Date: $expiryDate',
               style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'CVV: $cvv',
               style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
             ),
-            Spacer(),
+            const Spacer(),
             ElevatedButton(
               onPressed: () {
                 // Handle payment confirmation logic here
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Purchase confirmed!')),
+                  const SnackBar(content: Text('Purchase confirmed!')),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF7CE7FF), // Use color instead of primary
+                backgroundColor: const Color(0xFF7CE7FF), // Use color instead of primary
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
               child: Text(

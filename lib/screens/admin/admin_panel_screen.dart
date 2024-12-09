@@ -19,6 +19,12 @@ class AdminPanelScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF7CE7FF),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context); // Navigate backward when tapped
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -74,11 +80,11 @@ class GradientButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const GradientButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -89,11 +95,11 @@ class GradientButton extends StatelessWidget {
           colors: [Color(0xFF7CE7FF), Color(0xFFB0C7F7)],
         ),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black26,
             blurRadius: 6,
-            offset: const Offset(0, 3),
+            offset: Offset(0, 3),
           ),
         ],
       ),

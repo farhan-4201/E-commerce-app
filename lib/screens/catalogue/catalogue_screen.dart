@@ -6,7 +6,7 @@ import '/screens/checkout/checkout_screen.dart';
 import '/screens/admin/admin_panel_screen.dart'; // Import AdminPanelScreen
 
 class CatalogScreen extends StatefulWidget {
-  const CatalogScreen({Key? key}) : super(key: key);
+  const CatalogScreen({super.key});
 
   @override
   State<CatalogScreen> createState() => _CatalogScreenState();
@@ -130,7 +130,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AdminPanelScreen(),
+        builder: (context) => const AdminPanelScreen(),
       ),
     );
   }
@@ -143,9 +143,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Color.fromRGBO(82, 167, 237, 1)),
               child: Text(
-                'Menu',
+                'Dashboard',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
