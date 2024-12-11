@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-
 import 'screens/login/login_screen.dart';
 import 'screens/signup/signup_screen.dart';
 import 'screens/catalogue/catalogue_screen.dart';
@@ -10,9 +8,8 @@ import 'screens/admin/admin_panel_screen.dart';
 import 'screens/admin/add_product_screen.dart';
 import 'screens/admin/manage_order_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Initialize Firebase
   runApp(const MyApp());
 }
 
@@ -32,15 +29,15 @@ class MyApp extends StatelessWidget {
       // Define routes for navigation
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/signup': (context) =>  SignUpScreen(),
+        '/signup': (context) => SignUpScreen(), // This ensures the correct widget type
         '/catalog': (context) => const CatalogScreen(),
-        '/cart': (context) => const CartScreen(cart: []),
+        '/cart': (context) => const CartScreen(cart: []), // Ensure the correct argument type
         '/checkout': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
           return CheckoutScreen(product: args);
         },
         AdminPanelScreen.routeName: (context) => const AdminPanelScreen(),
-        AddProductScreen.routeName: (context) =>  AddProductScreen(),
+        AddProductScreen.routeName: (context) => AddProductScreen(),
         ManageOrderScreen.routeName: (context) => const ManageOrderScreen(),
       },
     );
