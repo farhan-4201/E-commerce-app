@@ -7,8 +7,8 @@ import '../screens/checkout/checkout_screen.dart';
 class AppRoutes {
   static Map<String, Widget Function(BuildContext)> getRoutes() {
     return {
-      '/login': (context) => const LoginScreen(),
-      '/signup': (context) =>  SignUpScreen(),
+      '/login': (context) => LoginScreen(),
+      '/signup': (context) => SignUpScreen(),
       '/catalog': (context) => const CatalogScreen(),
       '/checkout': (context) {
         final arguments = ModalRoute.of(context)?.settings.arguments;
@@ -23,6 +23,25 @@ class AppRoutes {
           );
         }
       },
+      '/logout': (context) => LogoutScreen(),
     };
+  }
+}
+
+class LogoutScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Simulating logout functionality
+    Future.delayed(Duration.zero, () {
+      // Clear session data here (if necessary)
+      // Navigate to the login screen
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    });
+
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }

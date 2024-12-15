@@ -19,17 +19,55 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String cvv = '';
   String cardHolderName = '';
 
+  // Helper method to validate the card number
+  String? validateCardNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter card number';
+    }
+    // Add a simple validation check for card number format
+    if (value.length != 16) {
+      return 'Card number must be 16 digits';
+    }
+    return null;
+  }
+
+  // Helper method to validate expiry date
+  String? validateExpiryDate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter expiry date';
+    }
+    // Check format MM/YY
+    final expiryDatePattern = RegExp(r'^(0[1-9]|1[0-2])\/(\d{2})$');
+    if (!expiryDatePattern.hasMatch(value)) {
+      return 'Invalid expiry date format (MM/YY)';
+    }
+    return null;
+  }
+
+  // Helper method to validate CVV
+  String? validateCVV(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter CVV';
+    }
+    if (value.length != 3) {
+      return 'CVV must be 3 digits';
+    }
+    return null;
+  }
+
   void goToPaymentScreen(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PaymentScreen(
-          product: widget.product,
-          cardNumber: cardNumber,
-          expiryDate: expiryDate,
-          cvv: cvv,
-          cardHolderName: cardHolderName,
-        )),
+        MaterialPageRoute(
+          builder: (context) => PaymentScreen(
+            product: widget.product,
+            cardNumber: cardNumber,
+            expiryDate: expiryDate,
+            cvv: cvv,
+            cardHolderName: cardHolderName,
+          ),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -112,12 +150,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         cardNumber = value;
                       });
                     },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter card number';
-                      }
-                      return null;
-                    },
+                    validator: validateCardNumber,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -127,12 +160,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         expiryDate = value;
                       });
                     },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter expiry date';
-                      }
-                      return null;
-                    },
+                    validator: validateExpiryDate,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -142,12 +170,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         cvv = value;
                       });
                     },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter CVV';
-                      }
-                      return null;
-                    },
+                    validator: validateCVV,
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton(

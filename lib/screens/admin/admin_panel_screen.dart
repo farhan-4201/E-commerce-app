@@ -66,11 +66,13 @@ class AdminPanelScreen extends StatelessWidget {
   }
 
   void _logout(BuildContext context) {
-    // Example logout functionality
+    // Clear session data if required (e.g., SharedPreferences, FirebaseAuth sign-out, etc.)
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Logged out successfully!')),
     );
-    Navigator.popUntil(context, ModalRoute.withName('/login'));
+
+    // Navigate to the Login Screen and remove all previous routes
+    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
   }
 }
 

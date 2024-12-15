@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '/screens/checkout/checkout_screen.dart';
+
 class CartScreen extends StatefulWidget {
   final List<Map<String, dynamic>> cart;
+  final void Function(Map<String, dynamic> product) onRemove; // Required parameter
 
-  const CartScreen({super.key, required this.cart});
+  const CartScreen({
+    super.key,
+    required this.cart,
+    required this.onRemove, // Ensure this is passed correctly
+  });
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -13,8 +19,10 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   void removeFromCart(int index) {
+    final product = widget.cart[index]; // Get the product to pass it to onRemove
+    widget.onRemove(product); // Call the onRemove callback
     setState(() {
-      widget.cart.removeAt(index);
+      widget.cart.removeAt(index); // Remove the product from the cart
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -31,7 +39,7 @@ class _CartScreenState extends State<CartScreen> {
       ),
     );
 
-    // Correctly navigate to the checkout screen
+    // Navigate to the checkout screen
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -103,7 +111,7 @@ class _CartScreenState extends State<CartScreen> {
                         IconButton(
                           icon: const FaIcon(FontAwesomeIcons.trashAlt, color: Colors.red),
                           onPressed: () {
-                            removeFromCart(index);
+                            removeFromCart(index); // Remove the item from the cart
                           },
                         ),
                       ],

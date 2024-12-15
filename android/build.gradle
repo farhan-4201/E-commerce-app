@@ -6,10 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1' // Replace with the latest Android Gradle plugin version
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Kotlin plugin
-        classpath 'com.google.gms:google-services:4.3.10' // Replace with the latest Google services version
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1' // Replace with the latest Firebase Crashlytics version
+       classpath 'com.google.gms.google-services:4.4.1' 
     }
 }
 

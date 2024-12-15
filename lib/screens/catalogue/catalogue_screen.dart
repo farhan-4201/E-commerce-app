@@ -112,7 +112,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CartScreen(cart: cart),
+        builder: (context) => CartScreen(cart: cart, onRemove: (Map<String, dynamic> product) {  },),
       ),
     );
   }
